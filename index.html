@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roberto Castro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root {
+            --font-primary: 'Arial';
+            --logo-size: 1.3rem;
+            --bg-dark: #1A1A1A;
+            --card-bg: #2B2B2B;
+            --text-primary: #FFFFFF;
+            --text-muted: #B0B0B0;
+            --accent-primary: #24E187;
+            --border: #3C3C3C;
+            --hamburger-bar-height: 4rem;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary), sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100%;
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.19);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(48, 213, 200, 0.3);
+        }
+
+        #sidebar .card:hover {
+            box-shadow: 0 0 10px rgba(48, 213, 200, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .sidebar-card-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Text Styles */
+        .text-muted { color: var(--text-muted); }
+        
+        .text-link-hover {
+            color: var(--accent-primary);
+            transition: color 0.2s ease-in-out;
+        }
+        
+        .text-link-hover:hover {
+            color: var(--accent-primary);
+            filter: brightness(1.2);
+        }
+
+        .get-in-touch-icon-link i {
+            color: var(--accent-primary);
+            transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            font-size: var(--logo-size);
+        }
+
+        .get-in-touch-icon-link:hover i {
+            color: var(--accent-primary);
+            filter: brightness(1.2);
+            transform: scale(1.15);
+        }
+
+        #get-in-touch-card .text-link-hover {
+            color: var(--text-muted);
+        }
+
+        #get-in-touch-card .text-link-hover:hover {
+            color: var(--accent-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+        /* Hamburger Menu */
+        #hamburger-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+            display: block;
+        }
+
+        #hamburger-menu-button {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+
+        #hamburger-menu-button:hover {
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+        }
+
+        #hamburger-menu-button .fas {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #hamburger-menu-button.active .fas {
+            transform: rotate(90deg);
+        }
+
+        #nav-dropdown {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+            padding: 0.5rem;
+            min-width: 150px;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, visibility 0s linear 0.3s;
+        }
+
+        #nav-dropdown.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        #nav-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-primary);
+            border-radius: 0.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        #nav-dropdown button:hover {
+            background: var(--accent-primary);
+            color: var(--bg-dark);
+        }
+
+        /* Animation */
+        @keyframes popUpEffect {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-popup {
+            opacity: 0;
+            transform: scale(0.8) translateY(10px);
+            animation: popUpEffect 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* Resizer */
+        #resizer {
+            width: 8px;
+            background: var(--border);
+            cursor: col-resize;
+            position: fixed;
+            top: 0;
+            height: 100%;
+            z-index: 30;
+            display: none;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        #resizer:hover {
+            background: var(--accent-primary);
+        }
+
+        /* Layout States */
+        .sidebar, .main-content {
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out;
+        }
+
+        /* Desktop View */
+        body.desktop-view .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            display: flex !important;
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+        }
+
+        body.desktop-view .main-content {
+            display: flex !important;
+            height: 100%;
+            background: var(--bg-dark);
+        }
+
+        body.desktop-view #hamburger-container {
+            display: none !important;
+        }
+
+        body.desktop-view #resizer {
+            display: block;
+        }
+
+        /* Mobile and Tablet Views */
+        body.about-me-only-view #hamburger-container,
+        body.mobile-view #hamburger-container {
+            display: flex !important;
+            justify-content: flex-end;
+            align-items: center;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: var(--hamburger-bar-height) !important;
+            padding: 0 1.5rem !important;
+            background-color: var(--card-bg) !important;
+            border-bottom: 1px solid var(--border) !important;
+            z-index: 100 !important;
+        }
+
+        body.about-me-only-view #hamburger-menu-button,
+        body.mobile-view #hamburger-menu-button {
+            position: static;
+        }
+
+        body.about-me-only-view .sidebar,
+        body.about-me-only-view .main-content,
+        body.mobile-view .sidebar,
+        body.mobile-view .main-content {
+            width: 100% !important;
+            position: absolute !important;
+            top: var(--hamburger-bar-height) !important;
+            left: 0;
+            height: calc(100vh - var(--hamburger-bar-height)) !important;
+            margin-left: 0 !important;
+            display: flex !important;
+            background: var(--bg-dark);
+            overflow-x: hidden;
+        }
+
+        /* About Me Only View */
+        body.about-me-only-view .sidebar {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        body.about-me-only-view .main-content {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        body.about-me-only-view.show-profile .sidebar {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        body.about-me-only-view.show-profile #sidebar > .flex-1 {
+            padding: 1.5rem 1rem 1rem !important;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        body.about-me-only-view.show-profile #sidebar .card {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        body.about-me-only-view.show-blog .main-content {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 20;
+            padding: 1.5rem !important;
+        }
+
+        @media (min-width: 768px) {
+            body.about-me-only-view.show-blog #main-content {
+                padding: 1.5rem 2rem 2rem !important;
+            }
+        }
+
+        /* Mobile View */
+        body.mobile-view .sidebar {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        body.mobile-view .main-content {
+            transform: translateX(0%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        body.mobile-view.show-profile .sidebar {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        body.mobile-view.show-profile #sidebar > .flex-1 {
+            padding: 1.5rem 1rem 1rem !important;
+            overflow-y: auto;
+        }
+
+        body.mobile-view.show-profile #sidebar .card {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        body.mobile-view.show-blog .main-content {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 20;
+            padding: 1.5rem !important;
+        }
+
+        .profile-icon-svg {
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <div id="hamburger-container">
+        <button id="hamburger-menu-button" aria-label="Open navigation menu">
+            <i class="fas fa-bars text-xl"></i>
+        </button>
+        <div id="nav-dropdown">
+            <button data-view="profile">View Profile</button>
+            <button data-view="blog">View Blog</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <aside id="sidebar" class="sidebar p-6 flex flex-col shadow-lg">
+            <div class="flex-1 flex flex-col space-y-6 overflow-y-auto overflow-x-hidden p-4">
+                <section class="card flex flex-col">
+                    <div class="flex-grow">
+                        <div class="flex flex-col items-center mb-4">
+                            <svg class="w-16 h-16 profile-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="1">
+                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 17L12 22L22 17" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M2 12L12 17L22 12" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h2 class="text-2xl font-bold text-center">Roberto Castro</h2>
+                            <p class="text-muted text-sm text-center">software eng | security eng & hacking sometimes</p>
+                        </div>
+                        <p class="text-sm text-center">
+                            Welcome to my personal website! Here on my website I have my projects and thoughts listed in blog post as you can see listed on the right, just things that I think are cool to share.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="card flex flex-col">
+                    <h3 class="sidebar-card-title">About Me</h3>
+                    <div class="flex-grow">
+                        <p class="text-sm leading-relaxed">
+                            Ever since I started to program games on Roblox I became very interested in programming and creating things as a whole. I started to program some random things on roblox and then got into
+                        </p>
+                    </div>
+                </section>
+
+                <section id="get-in-touch-card" class="card flex flex-col">
+                    <h3 class="sidebar-card-title">Contact</h3>
+                    <div class="flex flex-col space-y-3 py-2 self-center">
+                        <div class="flex items-center space-x-3">
+                            <a href="https://www.linkedin.com/in/robertocastro3/" target="_blank" rel="noopener noreferrer" class="get-in-touch-icon-link">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/in/robertocastro3/" target="_blank" rel="noopener noreferrer" class="text-sm text-link-hover break-all">
+                                linkedin.com/in/robertocastro3/
+                            </a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://github.com/Grant981" target="_blank" rel="noopener noreferrer" class="get-in-touch-icon-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://github.com/Grant981" target="_blank" rel="noopener noreferrer" class="text-sm text-link-hover break-all">
+                                github.com/Grant981
+                            </a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://x.com/NotNotRobC" target="_blank" rel="noopener noreferrer" class="get-in-touch-icon-link">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+                            <a href="https://x.com/NotNotRobC" target="_blank" rel="noopener noreferrer" class="text-sm text-link-hover break-all">
+                                x.com/NotNotRobC
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <div id="resizer"></div>
+
+        <main id="main-content" class="main-content flex-1 flex flex-col overflow-y-auto p-6 md:p-8 space-y-6">
+            <header class="mb-2">
+                <h1 class="text-3xl font-bold">my blog</h1>
+                <p class="text-muted">Recent thoughts and projects.</p>
+            </header>
+
+            <article class="card">
+                <h2 class="card-title">Manual Mapping DLL Injector | C++</h2>
+                <p class="text-sm mb-4 leading-relaxed">
+                    Coming Soon...
+                </p>
+                <div class="flex justify-between items-center mt-4">
+                    <span class="text-xs text-muted">Published on: ...</span>
+                    <a href="#" class="text-sm font-semibold text-link-hover">Read More &rarr;</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2 class="card-title">Niche Reminder App</h2>
+                <p class="text-sm mb-4 leading-relaxed">
+                    Coming Soon... 🤔
+                </p>
+                <div class="flex justify-between items-center mt-4">
+                    <span class="text-xs text-muted">Published on: ...</span>
+                    <a href="#" class="text-sm font-semibold text-link-hover">Read More &rarr;</a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const hamburgerContainer = document.getElementById('hamburger-container');
+        const hamburgerButton = document.getElementById('hamburger-menu-button');
+        const navDropdown = document.getElementById('nav-dropdown');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        const body = document.body;
+        const resizer = document.getElementById('resizer');
+
+        const layoutChangeThreshold = 768;
+        const mobileBreakpoint = 768;
+        const minSidebarWidth = 400;
+        const minMainContentWidth = 320;
+
+        let isResizing = false;
+        let initialMouseX = 0;
+        let initialSidebarWidth = 0;
+
+        function applyStaggeredAnimationsToVisible() {
+            const animatableSelectors = [
+                '#sidebar > .flex-1 > section.card',
+                '#main-content > header',
+                '#main-content > article.card'
+            ];
+            let visibleElementsToAnimate = [];
+
+            animatableSelectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    if (!el) return;
+                    const isVisible = el.offsetParent !== null;
+
+                    if (isVisible) {
+                        if (!el.hasAttribute('data-animation-applied')) {
+                            visibleElementsToAnimate.push(el);
+                        }
+                    } else {
+                        el.removeAttribute('data-animation-applied');
+                        el.classList.remove('animate-popup');
+                        el.style.animationDelay = '';
+                        el.style.opacity = '';
+                        el.style.transform = '';
+                    }
+                });
+            });
+
+            visibleElementsToAnimate.sort((a, b) => {
+                if (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) {
+                    return -1;
+                } else if (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_PRECEDING) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            if (visibleElementsToAnimate.length > 0) {
+                void document.body.offsetHeight;
+            }
+
+            visibleElementsToAnimate.forEach((el, index) => {
+                el.classList.remove('animate-popup');
+                void el.offsetWidth;
+                el.style.animationDelay = `${index * 0.1}s`;
+                el.classList.add('animate-popup');
+                el.setAttribute('data-animation-applied', 'true');
+            });
+        }
+
+        function initResize(e) {
+            if (!body.classList.contains('desktop-view') || e.target !== resizer) return;
+
+            if (e.type === 'touchstart') {
+                e.preventDefault();
+            }
+
+            isResizing = true;
+            initialMouseX = (e.type === 'touchstart') ? e.touches[0].clientX : e.clientX;
+            initialSidebarWidth = sidebar.offsetWidth;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'col-resize';
+
+            const moveEvent = e.type === 'mousedown' ? 'mousemove' : 'touchmove';
+            const endEvent = e.type === 'mousedown' ? 'mouseup' : 'touchend';
+            
+            document.addEventListener(moveEvent, handleResize, { passive: false });
+            document.addEventListener(endEvent, stopResize);
+        }
+
+        function handleResize(e) {
+            if (!isResizing) return;
+
+            if (e.type === 'touchmove') {
+                e.preventDefault();
+            }
+
+            const currentX = (e.type === 'touchmove') ? e.touches[0].clientX : e.clientX;
+            const deltaX = currentX - initialMouseX;
+            let newSidebarWidth = initialSidebarWidth + deltaX;
+            const resizerWidth = resizer.offsetWidth;
+            const totalWindowWidth = window.innerWidth;
+
+            newSidebarWidth = Math.max(minSidebarWidth, Math.min(newSidebarWidth, totalWindowWidth - minMainContentWidth - resizerWidth));
+
+            sidebar.style.width = `${newSidebarWidth}px`;
+            resizer.style.left = `${newSidebarWidth}px`;
+            mainContent.style.marginLeft = `${newSidebarWidth + resizerWidth}px`;
+            mainContent.style.width = `${totalWindowWidth - newSidebarWidth - resizerWidth}px`;
+        }
+
+        function stopResize() {
+            if (!isResizing) return;
+            isResizing = false;
+
+            document.removeEventListener('mousemove', handleResize);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchmove', handleResize);
+            document.removeEventListener('touchend', stopResize);
+
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        }
+
+        if (resizer) {
+            resizer.addEventListener('mousedown', initResize);
+            resizer.addEventListener('touchstart', initResize, { passive: false });
+        }
+
+        function checkLayout() {
+            const currentWidth = window.innerWidth;
+            const wasDesktop = body.classList.contains('desktop-view');
+            const wasShowProfile = body.classList.contains('show-profile');
+            const wasShowBlog = body.classList.contains('show-blog');
+
+            body.classList.remove('desktop-view', 'about-me-only-view', 'mobile-view', 'show-profile', 'show-blog');
+
+            if (!isResizing) {
+                sidebar.style.width = '';
+                mainContent.style.marginLeft = '';
+                mainContent.style.width = '';
+                if (resizer) resizer.style.left = '';
+            }
+
+            if (currentWidth >= layoutChangeThreshold) {
+                body.classList.add('desktop-view');
+                navDropdown.classList.remove('active');
+                hamburgerButton.classList.remove('active');
+
+                if (!isResizing) {
+                    let targetSidebarWidthPx = Math.max(minSidebarWidth, window.innerWidth * 0.25);
+                    const resizerWidth = resizer ? resizer.offsetWidth : 8;
+                    targetSidebarWidthPx = Math.max(minSidebarWidth, Math.min(targetSidebarWidthPx, window.innerWidth - minMainContentWidth - resizerWidth));
+
+                    sidebar.style.width = `${targetSidebarWidthPx}px`;
+                    if (resizer) resizer.style.left = `${targetSidebarWidthPx}px`;
+                    mainContent.style.marginLeft = `${targetSidebarWidthPx + resizerWidth}px`;
+                    mainContent.style.width = `${window.innerWidth - targetSidebarWidthPx - resizerWidth}px`;
+                }
+            } else {
+                body.classList.add(currentWidth >= mobileBreakpoint ? 'about-me-only-view' : 'mobile-view');
+                
+                if (wasDesktop || (!wasShowBlog && !wasShowProfile) || wasShowProfile) {
+                    body.classList.add('show-profile');
+                } else if (wasShowBlog) {
+                    body.classList.add('show-blog');
+                } else {
+                    body.classList.add('show-profile');
+                }
+            }
+        }
+
+        hamburgerButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navDropdown.classList.toggle('active');
+            hamburgerButton.classList.toggle('active');
+        });
+
+        navDropdown.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON' && e.target.dataset.view) {
+                if (body.classList.contains('mobile-view') || body.classList.contains('about-me-only-view')) {
+                    const view = e.target.dataset.view;
+                    const currentlyShowingProfile = body.classList.contains('show-profile');
+                    const currentlyShowingBlog = body.classList.contains('show-blog');
+
+                    let viewChanged = false;
+                    if (view === 'profile' && !currentlyShowingProfile) {
+                        body.classList.add('show-profile');
+                        body.classList.remove('show-blog');
+                        viewChanged = true;
+                    } else if (view === 'blog' && !currentlyShowingBlog) {
+                        body.classList.add('show-blog');
+                        body.classList.remove('show-profile');
+                        viewChanged = true;
+                    }
+
+                    if (viewChanged) {
+                        applyStaggeredAnimationsToVisible();
+                    }
+                }
+                navDropdown.classList.remove('active');
+                hamburgerButton.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (navDropdown.classList.contains('active') && !hamburgerContainer.contains(event.target)) {
+                navDropdown.classList.remove('active');
+                hamburgerButton.classList.remove('active');
+            }
+        });
+
+        // Initial Setup
+        checkLayout();
+        applyStaggeredAnimationsToVisible();
+
+        // Window Resize Listener
+        window.addEventListener('resize', () => {
+            if (isResizing) return;
+            checkLayout();
+        });
+    </script>
+</body>
+</html>
